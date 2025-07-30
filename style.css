@@ -391,6 +391,9 @@ body {
 
 .error-content p {
     margin-bottom: 1.5rem;
+    line-height: 1.6;
+    text-align: left;
+    font-size: 0.95rem;
 }
 
 /* 반응형 디자인 */

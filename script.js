@@ -107,6 +107,32 @@ function getImageBase64FromCanvas(imageElement) {
     return canvas.toDataURL('image/jpeg', 0.8);
 }
 
+// API 키 체크 함수 (더 견고하게)
+function checkApiKey() {
+    // config.js가 로드될 때까지 최대 3초 대기
+    return new Promise((resolve) => {
+        let attempts = 0;
+        const maxAttempts = 30; // 3초 (100ms * 30)
+        
+        const checkKey = () => {
+            if (window.GEMINI_API_KEY && window.GEMINI_API_KEY !== "YOUR_API_KEY_HERE") {
+                resolve(true);
+                return;
+            }
+            
+            attempts++;
+            if (attempts >= maxAttempts) {
+                resolve(false);
+                return;
+            }
+            
+            setTimeout(checkKey, 100);
+        };
+        
+        checkKey();
+    });
+}
+
 // 이미지 분석 함수
 async function analyzeImage() {
     if (!currentImageData) {
@@ -114,7 +140,9 @@ async function analyzeImage() {
         return;
     }
 
-    if (!window.GEMINI_API_KEY) {
+    // API 키 체크 (타이밍 문제 해결)
+    const hasValidApiKey = await checkApiKey();
+    if (!hasValidApiKey) {
         showError('API 키가 설정되지 않았습니다. config.js 파일을 확인해주세요.');
         return;
     }
@@ -395,7 +423,22 @@ function showResult() {
 
 function showError(message) {
     hideAllSections();
-    errorMessage.textContent = message;
+    
+    // 기본 에러 메시지 설정
+    let fullMessage = message;
+    
+    // API 키 관련 에러인 경우 더 자세한 정보 제공
+    if (message.includes('API 키')) {
+        fullMessage = `${message}\n\n모바일에서 접속 중이시라면:\n1. PC IP 주소로 접속하세요: 192.168.1.125:8000\n2. 브라우저를 새로고침해 보세요\n3. 캐시를 삭제해 보세요`;
+        
+        // 디버그 정보 추가 (모바일에서 확인 가능)
+        if (window.DEBUG_MODE) {
+            fullMessage += `\n\n[디버그 정보]\n- API 키 존재: ${!!window.GEMINI_API_KEY}\n- Config 로드됨: ${typeof window.API_CONFIG !== 'undefined'}\n- 현재 URL: ${window.location.href}\n- 사용자 에이전트: ${navigator.userAgent.includes('Mobile') ? '모바일' : '데스크톱'}`;
+        }
+    }
+    
+    errorMessage.style.whiteSpace = 'pre-line';
+    errorMessage.textContent = fullMessage;
     errorSection.style.display = 'block';
 }
 
@@ -412,7 +455,7 @@ function handleImageError(img) {
 }
 
 // 앱 초기화
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', async function() {
     // 모든 섹션 숨기기
     hideAllSections();
     
@@ -420,4 +463,27 @@ document.addEventListener('DOMContentLoaded', function() {
     document.addEventListener('touchstart', function() {}, {passive: true});
     
     console.log('칼로리M 앱이 초기화되었습니다.');
+    
+    // API 키 상태 확인 및 로깅
+    setTimeout(async () => {
+        const hasValidApiKey = await checkApiKey();
+        if (window.debugLog) {
+            window.debugLog('앱 초기화 완료', {
+                hasApiKey: hasValidApiKey,
+                apiKeyValue: window.GEMINI_API_KEY ? '[설정됨]' : '[없음]',
+                userAgent: navigator.userAgent,
+                screenSize: `${screen.width}x${screen.height}`,
+                viewportSize: `${window.innerWidth}x${window.innerHeight}`
+            });
+        }
+        
+        if (!hasValidApiKey) {
+            console.warn('⚠️ API 키 확인 필요:', {
+                hasWindow: !!window,
+                hasGeminiKey: !!window.GEMINI_API_KEY,
+                keyValue: window.GEMINI_API_KEY,
+                configLoaded: typeof window.API_CONFIG !== 'undefined'
+            });
+        }
+    }, 500);
 });
