@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>칼로리M - 음식 칼로리 계산기</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <!-- 헤더 -->
+        <header class="header">
+            <h1>🍽️ 칼로리M</h1>
+            <p>사진으로 간편하게 칼로리를 확인하세요</p>
+        </header>
+
+        <!-- 샘플 이미지 섹션 -->
+        <section class="sample-section">
+            <h2>예시 메뉴</h2>
+            <div class="sample-grid">
+                <div class="sample-item" onclick="loadSampleImage('images/menu1.jpg', '김치찌개')">
+                    <img src="images/menu1.jpg" alt="김치찌개" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgZmlsbD0iI2YwZjBmMCIvPjx0ZXh0IHg9IjUwJSIgeT0iNTAlIiBkb21pbmFudC1iYXNlbGluZT0ibWlkZGxlIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMTQiIGZpbGw9IiM5OTkiPuq5gOy5mOywjOqsnDwvdGV4dD48L3N2Zz4='">
+                    <span>김치찌개</span>
+                </div>
+                <div class="sample-item" onclick="loadSampleImage('images/menu2.jpg', '스파게티')">
+                    <img src="images/menu2.jpg" alt="스파게티" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgZmlsbD0iI2YwZjBmMCIvPjx0ZXh0IHg9IjUwJSIgeT0iNTAlIiBkb21pbmFudC1iYXNlbGluZT0ibWlkZGxlIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMTQiIGZpbGw9IiM5OTkiPuyKpO2MjOqyjO2LsDwvdGV4dD48L3N2Zz4='">
+                    <span>스파게티</span>
+                </div>
+                <div class="sample-item" onclick="loadSampleImage('images/menu3.jpg', '햄버거')">
+                    <img src="images/menu3.jpg" alt="햄버거" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgZmlsbD0iI2YwZjBmMCIvPjx0ZXh0IHg9IjUwJSIgeT0iNTAlIiBkb21pbmFudC1iYXNlbGluZT0ibWlkZGxlIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMTQiIGZpbGw9IiM5OTkiPu2WhOuyhOqxsDwvdGV4dD48L3N2Zz4='">
+                    <span>햄버거</span>
+                </div>
+                <div class="sample-item" onclick="loadSampleImage('images/menu4.jpg', '샌드위치')">
+                    <img src="images/menu4.jpg" alt="샌드위치" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgZmlsbD0iI2YwZjBmMCIvPjx0ZXh0IHg9IjUwJSIgeT0iNTAlIiBkb21pbmFudC1iYXNlbGluZT0ibWlkZGxlIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMTQiIGZpbGw9IiM5OTkiPuyDjOuTnOychOy5mDwvdGV4dD48L3N2Zz4='">
+                    <span>샌드위치</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- 사진 업로드 섹션 -->
+        <section class="upload-section">
+            <div class="upload-buttons">
+                <button class="upload-btn camera-btn" onclick="openCamera()">
+                    📷 사진 촬영
+                </button>
+                <button class="upload-btn gallery-btn" onclick="openGallery()">
+                    📁 갤러리 선택
+                </button>
+            </div>
+            <input type="file" id="fileInput" accept="image/*" capture="environment" style="display: none;" onchange="handleFileSelect(event)">
+            <input type="file" id="galleryInput" accept="image/*" style="display: none;" onchange="handleFileSelect(event)">
+        </section>
+
+        <!-- 이미지 미리보기 섹션 -->
+        <section class="preview-section" id="previewSection" style="display: none;">
+            <h3>업로드된 사진</h3>
+            <div class="image-preview">
+                <img id="previewImage" alt="업로드된 이미지">
+                <canvas id="imageCanvas" style="display: none;"></canvas>
+            </div>
+            <div class="action-buttons">
+                <button class="analyze-btn" onclick="analyzeImage()">
+                    🔍 칼로리 분석하기
+                </button>
+                <button class="reset-btn" onclick="resetApp()">
+                    🔄 다시 촬영하기
+                </button>
+            </div>
+        </section>
+
+        <!-- 로딩 섹션 -->
+        <section class="loading-section" id="loadingSection" style="display: none;">
+            <div class="loading-spinner"></div>
+            <p>AI가 음식을 분석 중입니다...</p>
+        </section>
+
+        <!-- 결과 섹션 -->
+        <section class="result-section" id="resultSection" style="display: none;">
+            <h3>🍽️ 분석 결과</h3>
+            <div class="result-content">
+                <div class="food-items" id="foodItems">
+                    <!-- 음식 아이템들이 여기에 동적으로 추가됩니다 -->
+                </div>
+                <div class="total-calories">
+                    <h4>총 예상 칼로리: <span id="totalCalories">0</span>kcal</h4>
+                </div>
+                <div class="calculation-process" id="calculationProcess">
+                    <!-- 계산 과정이 여기에 표시됩니다 -->
+                </div>
+                <div class="exercise-recommendations" id="exerciseRecommendations">
+                    <!-- 운동 권장량이 여기에 표시됩니다 -->
+                </div>
+                <div class="result-actions">
+                    <button class="copy-btn" onclick="copyResult()">
+                        📋 결과 복사하기
+                    </button>
+                    <button class="reset-btn" onclick="resetApp()">
+                        🔄 다시 분석하기
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- 에러 섹션 -->
+        <section class="error-section" id="errorSection" style="display: none;">
+            <div class="error-content">
+                <h3>⚠️ 오류가 발생했습니다</h3>
+                <p id="errorMessage">알 수 없는 오류가 발생했습니다.</p>
+                <button class="reset-btn" onclick="resetApp()">
+                    🔄 다시 시도하기
+                </button>
+            </div>
+        </section>
+    </div>
+
+    <script src="config.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>

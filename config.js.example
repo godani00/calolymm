@@ -1,0 +1,49 @@
+// API 설정 파일 예시
+// 사용법: 이 파일을 config.js로 복사한 후 실제 API 키를 입력하세요.
+
+// Gemini API 키 설정
+// Google AI Studio(https://makersuite.google.com/app/apikey)에서 API 키를 발급받으세요.
+window.GEMINI_API_KEY = "YOUR_API_KEY_HERE";
+
+// API 설정
+window.API_CONFIG = {
+    // Gemini API 모델
+    model: "gemini-1.5-flash",
+    
+    // API 엔드포인트
+    endpoint: "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent",
+    
+    // 요청 타임아웃 (밀리초)
+    timeout: 30000,
+    
+    // 이미지 최대 크기 (바이트)
+    maxImageSize: 10 * 1024 * 1024, // 10MB
+    
+    // 이미지 압축 품질 (0.1 ~ 1.0)
+    imageQuality: 0.8,
+    
+    // 이미지 최대 해상도
+    maxImageWidth: 800,
+    maxImageHeight: 600
+};
+
+// 개발 모드 설정
+window.DEBUG_MODE = false; // 개발 중에는 true, 프로덕션에서는 false로 설정
+
+// 로그 함수
+window.debugLog = function(message, data = null) {
+    if (window.DEBUG_MODE) {
+        console.log('[칼로리M Debug]', message, data || '');
+    }
+};
+
+// API 키 유효성 검사
+if (!window.GEMINI_API_KEY || window.GEMINI_API_KEY === "YOUR_API_KEY_HERE") {
+    console.warn('⚠️ Gemini API 키가 설정되지 않았습니다. config.js 파일에서 올바른 API 키를 설정해주세요.');
+}
+
+window.debugLog('Config 파일이 로드되었습니다', {
+    hasApiKey: !!window.GEMINI_API_KEY && window.GEMINI_API_KEY !== "YOUR_API_KEY_HERE",
+    model: window.API_CONFIG.model,
+    debug: window.DEBUG_MODE
+});
